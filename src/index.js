@@ -90,12 +90,12 @@ class MySql extends Database {
   }
 
   /**
-   * Returns the pdo connection instance.
+   * Returns the client instance.
    *
    * @return Function
    */
   client() {
-    return this.connect();
+    return this._client;
   }
 
   /**
@@ -152,7 +152,7 @@ class MySql extends Database {
 
       var cursor = this.constructor.classes().cursor;
 
-      this.client().then(function() {
+      this.connect().then(function() {
         this._client.query(sql, function(err, data) {
           if (err) {
             reject(err);

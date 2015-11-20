@@ -98,7 +98,7 @@ describe("MySql", function() {
     it("returns the same connection when called multiple times.", function(done) {
 
       co(function*() {
-        var expected = yield this.connection.client();
+        var expected = yield this.connection.connect();
 
         var actual = yield this.connection.connect();
         expect(actual).toBe(expected);
@@ -118,8 +118,10 @@ describe("MySql", function() {
     it("returns the connected client.", function(done) {
 
       co(function*() {
-        var client = yield this.connection.client();
-        expect(client).toBeAn('object');
+        var connection = new getConnection();
+        expect(connection.client()).toBe(undefined);
+        yield connection.connect();
+        expect(connection.client()).toBeAn('object');
       }.bind(this)).then(function() {
         done();
       });
@@ -138,10 +140,7 @@ describe("MySql", function() {
 
     it("returns `false` when not connected.", function() {
 
-      var connection = new MySql({
-        connect: false
-      });
-
+      var connection = new MySql();
       expect(connection.connected()).toBe(false);
 
     });
