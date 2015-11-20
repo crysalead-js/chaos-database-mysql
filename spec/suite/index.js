@@ -2,6 +2,7 @@ import co from 'co';
 import mysql from 'mysql';
 import { Schema } from 'chaos-database';
 import MySql from '../../src';
+import { Dialect } from 'sql-dialect';
 
 Promise = require('bluebird');
 
@@ -13,6 +14,36 @@ describe("MySql", function() {
       username: 'root',
       password: 'root'
     });
+  });
+
+  describe(".constructor()", function() {
+
+    it("allows to inject a dialect instance", function() {
+
+      var dialect = new Dialect();
+      var connection = new MySql({ dialect: dialect });
+
+      expect(connection.dialect()).toBe(dialect);
+
+    });
+
+    it("correctly sets up a default dialect instance.", function() {
+
+      var dialect = this.connection.dialect();
+
+      expect(dialect.quote('tablename')).toBe("'tablename'");
+
+      expect(dialect.value('string_value', {
+        name: 'string_field',
+        type: function(name) {
+          if (name === 'string_field') {
+            return 'string';
+          }
+        }
+      })).toBe("'string_value'");
+
+    });
+
   });
 
   describe(".enabled()", function() {
@@ -95,36 +126,6 @@ describe("MySql", function() {
 
   });
 
-  describe(".disconnect()", function() {
-
-    it("disconnect the driver.", function(done) {
-
-      co(function*() {
-        var connection = new MySql({
-          database: 'chaos_test',
-          username: 'root',
-          password: 'root'
-        });
-
-        expect(connection.disconnect()).toBe(true);
-        expect(connection.connected()).toBe(false);
-
-        yield connection.connect();
-        expect(connection.connected()).toBe(true);
-
-        expect(connection.disconnect()).toBe(true);
-        expect(connection.connected()).toBe(false);
-
-      }.bind(this)).then(function() {
-        done();
-      });
-
-
-
-    });
-
-  });
-
   describe(".connected()", function() {
 
     it("returns `true` when connected.", function() {
@@ -143,6 +144,24 @@ describe("MySql", function() {
       });
 
       expect(connection.connected()).toBe(false);
+
+    });
+
+  });
+
+  describe(".query()", function() {
+
+    it("rejects the promise when an error occurs.", function(done) {
+
+      co(function*() {
+        var response = yield this.connection.query("SELECT * FROM");
+        expect(driver).toBeAn('object');
+      }.bind(this)).then(function() {
+        expect(false).toBe(true);
+      }).catch(function(err) {
+        expect(err.message).toMatch(/You have an error in your SQL syntax/);
+        done();
+      });
 
     });
 
@@ -174,36 +193,42 @@ describe("MySql", function() {
 
   describe(".describe()", function() {
 
+    beforeEach(function() {
+
+      this.schema = new Schema();
+      this.schema.source('gallery');
+      this.schema.set('id', { type: 'serial' });
+      this.schema.set('name', {
+        type: 'string',
+        length: 128,
+        'default': 'Johnny Boy'
+      });
+      this.schema.set('active', {
+        type: 'boolean',
+        'default': true
+      });
+      this.schema.set('inactive', {
+        type: 'boolean',
+        'default': false
+      });
+      this.schema.set('money', {
+        type: 'decimal',
+        length: 10,
+        precision: 2
+      });
+      this.schema.set('created', {
+        type: 'datetime',
+        use: 'timestamp',
+        'default': { ':plain': 'CURRENT_TIMESTAMP' }
+      });
+
+    });
+
     it("describe a source", function(done) {
 
       co(function*() {
-        var schema = new Schema({ connection: this.connection });
-        schema.source('gallery');
-        schema.set('id', { type: 'serial' });
-        schema.set('name', {
-          type: 'string',
-          length: 128,
-          'default': 'Johnny Boy'
-        });
-        schema.set('active', {
-          type: 'boolean',
-          'default': true
-        });
-        schema.set('inactive', {
-          type: 'boolean',
-          'default': false
-        });
-        schema.set('money', {
-          type: 'decimal',
-          length: 10,
-          precision: 2
-        });
-        schema.set('created', {
-          type: 'datetime',
-          use: 'timestamp',
-          'default': { ':plain': 'CURRENT_TIMESTAMP' }
-        });
-        yield schema.create();
+        this.schema.connection(this.connection);
+        yield this.schema.create();
 
         var gallery = yield this.connection.describe('gallery');
 
@@ -261,7 +286,62 @@ describe("MySql", function() {
           array: false
         });
 
-        yield schema.drop();
+        yield this.schema.drop();
+      }.bind(this)).then(function() {
+        done();
+      });
+
+    });
+
+    it("creates a schema instance without introspection", function(done) {
+
+      co(function*() {
+
+        var gallery = yield this.connection.describe('gallery', this.schema.fields());
+
+        expect(gallery.field('id')).toEqual({
+          type: 'serial',
+          null: false,
+          array: false
+        });
+
+        expect(gallery.field('name')).toEqual({
+          type: 'string',
+          length: 128,
+          null: true,
+          'default': 'Johnny Boy',
+          array: false
+        });
+
+        expect(gallery.field('active')).toEqual({
+          type: 'boolean',
+          null: true,
+          'default': true,
+          array: false
+        });
+
+        expect(gallery.field('inactive')).toEqual({
+          type: 'boolean',
+          null: true,
+          'default': false,
+          array: false
+        });
+
+        expect(gallery.field('money')).toEqual({
+          type: 'decimal',
+          length: 10,
+          precision: 2,
+          null: true,
+          array: false
+        });
+
+        expect(gallery.field('created')).toEqual({
+          use: 'timestamp',
+          type: 'datetime',
+          null: true,
+          array: false,
+          'default': { ':plain': 'CURRENT_TIMESTAMP' }
+        });
       }.bind(this)).then(function() {
         done();
       });
@@ -285,6 +365,34 @@ describe("MySql", function() {
         expect(schema.lastInsertId()).toBe(1);
 
         yield schema.drop();
+      }.bind(this)).then(function() {
+        done();
+      });
+
+    });
+
+  });
+
+  describe(".disconnect()", function() {
+
+    it("disconnect the driver.", function(done) {
+
+      co(function*() {
+        var connection = new MySql({
+          database: 'chaos_test',
+          username: 'root',
+          password: 'root'
+        });
+
+        expect(connection.disconnect()).toBe(true);
+        expect(connection.connected()).toBe(false);
+
+        yield connection.connect();
+        expect(connection.connected()).toBe(true);
+
+        expect(connection.disconnect()).toBe(true);
+        expect(connection.connected()).toBe(false);
+
       }.bind(this)).then(function() {
         done();
       });

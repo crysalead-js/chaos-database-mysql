@@ -78,9 +78,6 @@ class MySql extends Database {
 
     if (typeof this._dialect !== 'object') {
       this._dialect = new dialect({
-        quoter: function(string) {
-          return this._driver.escape(string);
-        }.bind(this),
         caster: function(value, states) {
           var type = states && states.type ? states.type : this.constructor.getType(value);
           if (typeof type === 'function') {
