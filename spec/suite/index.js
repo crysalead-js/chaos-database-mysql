@@ -98,7 +98,7 @@ describe("MySql", function() {
     it("returns the same connection when called multiple times.", function(done) {
 
       co(function*() {
-        var expected = yield this.connection.driver();
+        var expected = yield this.connection.client();
 
         var actual = yield this.connection.connect();
         expect(actual).toBe(expected);
@@ -113,13 +113,13 @@ describe("MySql", function() {
 
   });
 
-  describe(".driver()", function() {
+  describe(".client()", function() {
 
-    it("returns the connected driver.", function(done) {
+    it("returns the connected client.", function(done) {
 
       co(function*() {
-        var driver = yield this.connection.driver();
-        expect(driver).toBeAn('object');
+        var client = yield this.connection.client();
+        expect(client).toBeAn('object');
       }.bind(this)).then(function() {
         done();
       });
@@ -154,7 +154,7 @@ describe("MySql", function() {
 
       co(function*() {
         var response = yield this.connection.query("SELECT * FROM");
-        expect(driver).toBeAn('object');
+        expect(client).toBeAn('object');
       }.bind(this)).then(function() {
         expect(false).toBe(true);
       }).catch(function(err) {
@@ -374,7 +374,7 @@ describe("MySql", function() {
 
   describe(".disconnect()", function() {
 
-    it("disconnect the driver.", function(done) {
+    it("disconnects the client.", function(done) {
 
       co(function*() {
         var connection = getConnection();

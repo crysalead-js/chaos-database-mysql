@@ -44,7 +44,7 @@ class MySql extends Database {
       connectionLimit: 10,
       host: 'localhost',
       alias: true,
-      driver: undefined,
+      client: undefined,
       dialect: true
     };
     config = merge({}, defaults, config);
@@ -67,7 +67,7 @@ class MySql extends Database {
      *
      * @var Function
      */
-    this._driver = config.driver;
+    this._client = config.client;
 
     /**
      * The SQL dialect instance.
@@ -94,7 +94,7 @@ class MySql extends Database {
    *
    * @return Function
    */
-  driver() {
+  client() {
     return this.connect();
   }
 
@@ -105,8 +105,8 @@ class MySql extends Database {
    *                 otherwise `false`.
    */
   connect() {
-    if (this._driver) {
-      return Promise.resolve(this._driver);
+    if (this._client) {
+      return Promise.resolve(this._client);
     }
 
     var config = this.config();
@@ -116,13 +116,13 @@ class MySql extends Database {
     }
 
     return new Promise(function(accept, reject) {
-      var driver = mysql.createConnection(config);
-      this._driver = driver;
-      driver.connect(function(err) {
+      var client = mysql.createConnection(config);
+      this._client = client;
+      client.connect(function(err) {
         if (err) {
           reject(new Error('Unable to connect to host , error ' + err.code + ' ' + err.stack));
         }
-        accept(driver)
+        accept(client)
       });
     }.bind(this));
   }
@@ -135,7 +135,7 @@ class MySql extends Database {
    *                 otherwise been dropped by the remote resource during the course of the request.
    */
   connected() {
-    return !!this._driver;
+    return !!this._client;
   }
 
   /**
@@ -152,8 +152,8 @@ class MySql extends Database {
 
       var cursor = this.constructor.classes().cursor;
 
-      this.driver().then(function() {
-        this._driver.query(sql, function(err, data) {
+      this.client().then(function() {
+        this._client.query(sql, function(err, data) {
           if (err) {
             reject(err);
           }
@@ -289,11 +289,11 @@ class MySql extends Database {
    * @return Boolean Returns `true` on success, else `false`.
    */
   disconnect() {
-    if (!this._driver) {
+    if (!this._client) {
       return true;
     }
-    this._driver.end();
-    this._driver = undefined;
+    this._client.end();
+    this._client = undefined;
     return true;
   }
 }
