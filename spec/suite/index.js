@@ -6,14 +6,17 @@ import { Dialect } from 'sql-dialect';
 
 Promise = require('bluebird');
 
+function getConnection() {
+  return new MySql({
+    database: 'chaos_test',
+    username: 'root'
+  });
+}
+
 describe("MySql", function() {
 
   before(function() {
-    this.connection = new MySql({
-      database: 'chaos_test',
-      username: 'root',
-      password: 'root'
-    });
+    this.connection = getConnection();
   });
 
   describe(".constructor()", function() {
@@ -137,9 +140,6 @@ describe("MySql", function() {
     it("returns `false` when not connected.", function() {
 
       var connection = new MySql({
-        database: 'chaos_test',
-        username: 'root',
-        password: 'root',
         connect: false
       });
 
@@ -378,11 +378,7 @@ describe("MySql", function() {
     it("disconnect the driver.", function(done) {
 
       co(function*() {
-        var connection = new MySql({
-          database: 'chaos_test',
-          username: 'root',
-          password: 'root'
-        });
+        var connection = getConnection();
 
         expect(connection.disconnect()).toBe(true);
         expect(connection.connected()).toBe(false);

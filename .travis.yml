@@ -3,6 +3,9 @@ language: node_js
 node_js:
   - "4"
 
+before_script:
+  - mysql -e 'create database chaos_test;'
+
 after_script:
   - npm run coverage-report
   - npm run push-coverage
