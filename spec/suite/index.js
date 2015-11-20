@@ -1,5 +1,4 @@
 import co from 'co';
-import mysql from 'mysql';
 import { Schema } from 'chaos-database';
 import MySql from '../../src';
 import { Dialect } from 'sql-dialect';
