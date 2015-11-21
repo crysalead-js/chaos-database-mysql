@@ -143,7 +143,8 @@ class MySql extends Database {
    *
    * @param  string sql  SQL query to execute.
    * @param  array  data Array of bound parameters to use as values for query.
-   * @return object       A `Cursor` instance.
+   *                     WARNING data must be clean at this step. SQL injection must be handled earlier.
+   * @return object      A `Cursor` instance.
    */
   query(sql, data, options) {
     return new Promise(function(accept, reject) {
