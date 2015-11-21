@@ -242,26 +242,21 @@ class MySql extends Database {
       var columns = yield this.query('DESCRIBE ' + name);
       for (var column of columns) {
         var field = this._field(column);
-        var dft = column.Default;
+        var dflt = column.Default;
 
         switch (field.type) {
           case 'boolean':
-            if (dft === '1') {
-              dft = true;
-            }
-            if (dft === '0') {
-              dft = false;
-            }
+            dflt = dflt === '1';
             break;
           case 'datetime':
-            dft = dft !== 'CURRENT_TIMESTAMP' ? dft : null;
+            dflt = dflt !== 'CURRENT_TIMESTAMP' ? dflt : null;
             break;
         }
 
         tmp = {};
         tmp[column.Field] = extend({}, {
           null: (column.Null === 'YES' ? true : false),
-          'default': dft
+          'default': dflt
         }, field);
 
         fields.push(tmp);
