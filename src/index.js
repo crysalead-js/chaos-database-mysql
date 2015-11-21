@@ -129,7 +129,7 @@ class MySql extends Database {
       self._client = client;
       client.connect(function(err) {
         if (err) {
-          reject(new Error('Unable to connect to host , error ' + err.code + ' ' + err.stack));
+          return reject(new Error('Unable to connect to host , error ' + err.code + ' ' + err.stack));
         }
         self._connected = true;
         accept(client)
@@ -167,7 +167,7 @@ class MySql extends Database {
       self.connect().then(function() {
         self._client.query(sql, function(err, data) {
           if (err) {
-            reject(err);
+            return reject(err);
           }
           if (data) {
             self._lastInsertId = data.insertId;
