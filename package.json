@@ -23,11 +23,11 @@
   "main": "lib/index.js",
   "jsnext:main": "src/index.js",
   "dependencies": {
-    "chaos-database": "^0.1.1",
+    "chaos-database": "^0.1.2",
     "co": "^4.6.0",
     "extend-merge": "^1.0.3",
     "mysql": "^2.9.0",
-    "sql-dialect": "^1.0.2"
+    "sql-dialect": "^1.0.3"
   },
   "devDependencies": {
     "babel-cli": "^6.2.0",
