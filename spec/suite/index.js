@@ -132,9 +132,14 @@ describe("MySql", function() {
 
   describe(".connected()", function() {
 
-    it("returns `true` when connected.", function() {
+    it("returns `true` when connected.", function(done) {
 
-      expect(this.connection.connected()).toBe(true);
+      co(function*() {
+        yield this.connection.connect();
+        expect(this.connection.connected()).toBe(true);
+      }.bind(this)).then(function() {
+        done();
+      });
 
     });
 

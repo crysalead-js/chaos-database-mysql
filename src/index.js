@@ -70,6 +70,13 @@ class MySql extends Database {
     this._client = config.client;
 
     /**
+     * Whether the client is connected or not.
+     *
+     * @var Boolean
+     */
+    this._connected = false;
+
+    /**
      * The SQL dialect instance.
      *
      * @var Function
@@ -115,16 +122,19 @@ class MySql extends Database {
       return Promise.reject(new Error('Error, no database name has been configured.'));
     }
 
+    var self = this;
+
     return new Promise(function(accept, reject) {
       var client = mysql.createConnection(config);
-      this._client = client;
+      self._client = client;
       client.connect(function(err) {
         if (err) {
           reject(new Error('Unable to connect to host , error ' + err.code + ' ' + err.stack));
         }
+        self._connected = true;
         accept(client)
       });
-    }.bind(this));
+    });
   }
 
   /**
@@ -135,7 +145,7 @@ class MySql extends Database {
    *                 otherwise been dropped by the remote resource during the course of the request.
    */
   connected() {
-    return !!this._client;
+    return this._connected;
   }
 
   /**
@@ -147,25 +157,26 @@ class MySql extends Database {
    * @return object      A `Cursor` instance.
    */
   query(sql, data, options) {
+    var self = this;
     return new Promise(function(accept, reject) {
       var defaults = {};
       options = extend({}, defaults, options);
 
-      var cursor = this.constructor.classes().cursor;
+      var cursor = self.constructor.classes().cursor;
 
-      this.connect().then(function() {
-        this._client.query(sql, function(err, data) {
+      self.connect().then(function() {
+        self._client.query(sql, function(err, data) {
           if (err) {
             reject(err);
           }
           if (data) {
-            this._lastInsertId = data.insertId;
+            self._lastInsertId = data.insertId;
             data = new cursor({ data: data });
           }
           accept(data);
-        }.bind(this));
-      }.bind(this))
-    }.bind(this));
+        });
+      })
+    });
   }
 
   /**
@@ -295,6 +306,7 @@ class MySql extends Database {
     }
     this._client.end();
     this._client = undefined;
+    this._connected = false;
     return true;
   }
 }
