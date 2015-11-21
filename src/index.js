@@ -241,7 +241,7 @@ class MySql extends Database {
       var tmp, fields = [];
       var columns = yield this.query('DESCRIBE ' + name);
       for (var column of columns) {
-        var field = this._column(column.Type);
+        var field = this._field(column);
         var dft = column.Default;
 
         switch (field.type) {
@@ -271,28 +271,28 @@ class MySql extends Database {
   }
 
   /**
-   * Converts database-layer column types to basic types.
+   * Converts database-layer column to a generic field.
    *
-   * @param  string real Real database-layer column type (i.e. `"varchar(255)"`)
-   * @return array        Column type (i.e. "string") plus 'length' when appropriate.
+   * @param  Object column Database-layer column.
+   * @return Object        A generic field.
    */
-  _column(real) {
-    var matches = real.match(/(\w+)(?:\(([\d,]+)\))?/);
-    var column = {};
-    column.type = matches[1];
-    column.length = matches[2];
-    column.use = column.type;
+  _field(column) {
+    var matches = column.Type.match(/(\w+)(?:\(([\d,]+)\))?/);
+    var field = {};
+    field.type = matches[1];
+    field.length = matches[2];
+    field.use = field.type;
 
-    if (column.length) {
-      var length = column.length.split(',');
-      column.length = Number.parseInt(length[0]);
+    if (field.length) {
+      var length = field.length.split(',');
+      field.length = Number.parseInt(length[0]);
       if (length[1]) {
-        column.precision = Number.parseInt(length[1]);
+        field.precision = Number.parseInt(length[1]);
       }
     }
 
-    column.type = this.dialect().mapped(column);
-    return column;
+    field.type = this.dialect().mapped(field);
+    return field;
   }
 
   /**
