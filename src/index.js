@@ -19,7 +19,8 @@ class MySql extends Database {
     var features = {
       arrays: false,
       transactions: true,
-      booleans: true
+      booleans: true,
+      default: false
     };
     if (!arguments.length) {
       return extend({}, features);

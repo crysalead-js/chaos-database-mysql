@@ -55,11 +55,13 @@ describe("MySql", function() {
       expect(MySql.enabled()).toEqual({
         arrays: false,
         transactions: true,
-        booleans: true
+        booleans: true,
+        default: false
       });
       expect(MySql.enabled('arrays')).toBe(false);
       expect(MySql.enabled('transactions')).toBe(true);
       expect(MySql.enabled('booleans')).toBe(true);
+      expect(MySql.enabled('default')).toBe(false);
 
     });
 
