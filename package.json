@@ -23,7 +23,7 @@
   "main": "lib/index.js",
   "jsnext:main": "src/index.js",
   "dependencies": {
-    "chaos-database": "^1.0",
+    "chaos-database": "^1.1",
     "co": "^4.6.0",
     "extend-merge": "^1.0.3",
     "mysql": "^2.9.0",
