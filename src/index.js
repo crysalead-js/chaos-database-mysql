@@ -170,13 +170,14 @@ class MySql extends Database {
           if (err) {
             return reject(err);
           }
-          if (data) {
+          if (data && data.insertId !== undefined) {
             self._lastInsertId = data.insertId;
-            data = new cursor({ data: data });
+            accept(true);
+          } else {
+            accept(data ? new cursor({ data: data }) : true);
           }
-          accept(data);
         });
-      })
+      });
     });
   }
 

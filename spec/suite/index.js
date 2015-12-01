@@ -156,11 +156,50 @@ describe("MySql", function() {
 
   describe(".query()", function() {
 
+    it("returns a cursor instance on success", function(done) {
+
+      co(function*() {
+        var response = yield this.connection.query("SELECT 1 + 1 as sum");
+        var row = response.next();
+        expect(row.sum).toBe(2);
+        done();
+      }.bind(this));
+
+    });
+
+    it("returns `true` on success when no data are available", function(done) {
+
+      co(function*() {
+        var schema = new Schema({ connection: this.connection });
+        schema.source('gallery');
+        schema.set('id', { type: 'serial' });
+        schema.set('name', { type: 'string' });
+        yield schema.create();
+
+        expect(yield schema.insert({ name: 'new gallery' })).toBe(true);
+        var id = schema.lastInsertId();
+
+        expect(yield schema.update({ name: 'updated gallery' }, { name: 'new gallery' })).toBe(true);
+
+        var cursor = yield this.connection.query('SELECT `name` FROM `gallery` WHERE `id` = ' + id);
+        var gallery = cursor.next();
+        expect(gallery.name).toBe('updated gallery');
+
+        expect(yield schema.delete({ id: id })).toBe(true);
+
+        var cursor = yield this.connection.query('SELECT `name` FROM `gallery` WHERE `id` = ' + id);
+        expect(cursor.valid()).toBe(false);
+
+        yield schema.drop();
+        done();
+      }.bind(this));
+
+    });
+
     it("rejects the promise when an error occurs.", function(done) {
 
       co(function*() {
         var response = yield this.connection.query("SELECT * FROM");
-        expect(client).toBeAn('object');
       }.bind(this)).then(function() {
         expect(false).toBe(true);
       }).catch(function(err) {
