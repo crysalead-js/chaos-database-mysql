@@ -207,32 +207,6 @@ class MySql extends Database {
   }
 
   /**
-   * Gets the column schema for a given MySQL table.
-   *
-   * @param  mixed    name   Specifies the table name for which the schema should be returned.
-   * @param  Object   fields Any schema data pre-defined by the model.
-   * @param  Object   meta
-   * @return Function        Returns a shema definition.
-   */
-  describe(name, fields, meta) {
-    var nbargs = arguments.length;
-    return co(function*() {
-      if (nbargs === 1) {
-        fields = yield this.fields(name);
-      }
-
-      var schema = this.classes().schema;
-
-      return new schema({
-        connection: this,
-        source: name,
-        fields: fields,
-        meta: meta
-      });
-    }.bind(this));
-  }
-
-  /**
    * Extracts fields definitions of a table.
    *
    * @param  String name The table name.
