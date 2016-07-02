@@ -461,73 +461,73 @@ describe("MySql", function() {
 
   });
 
-  describe(".format()", function() {
+  describe(".convert()", function() {
 
     it("formats according default `'datasource'` handlers", function() {
 
-      expect(this.connection.format('datasource', 'id', 123)).toBe('123');
-      expect(this.connection.format('datasource', 'serial', 123)).toBe('123');
-      expect(this.connection.format('datasource', 'integer', 123)).toBe('123');
-      expect(this.connection.format('datasource', 'float', 12.3)).toBe('12.3');
-      expect(this.connection.format('datasource', 'decimal', 12.3)).toBe('12.3');
+      expect(this.connection.convert('datasource', 'id', 123)).toBe('123');
+      expect(this.connection.convert('datasource', 'serial', 123)).toBe('123');
+      expect(this.connection.convert('datasource', 'integer', 123)).toBe('123');
+      expect(this.connection.convert('datasource', 'float', 12.3)).toBe('12.3');
+      expect(this.connection.convert('datasource', 'decimal', 12.3)).toBe('12.3');
       var date = new Date('2014-11-21');
-      expect(this.connection.format('datasource', 'date', date)).toBe("'2014-11-21'");
-      expect(this.connection.format('datasource', 'date', '2014-11-21')).toBe("'2014-11-21'");
+      expect(this.connection.convert('datasource', 'date', date)).toBe("'2014-11-21'");
+      expect(this.connection.convert('datasource', 'date', '2014-11-21')).toBe("'2014-11-21'");
       var datetime = new Date('2014-11-21T10:20:45.000Z');
-      expect(this.connection.format('datasource', 'datetime', datetime)).toBe("'2014-11-21 10:20:45'");
-      expect(this.connection.format('datasource', 'datetime', '2014-11-21T10:20:45+02:00')).toBe("'2014-11-21 08:20:45'");
-      expect(this.connection.format('datasource', 'boolean', true)).toBe('TRUE');
-      expect(this.connection.format('datasource', 'boolean', false)).toBe('FALSE');
-      expect(this.connection.format('datasource', 'null', null)).toBe('NULL');
-      expect(this.connection.format('datasource', 'string', 'abc')).toBe("'abc'");
-      expect(this.connection.format('datasource', '_default_', 123)).toBe("'123'");
-      expect(this.connection.format('datasource', '_undefined_', 123)).toBe("'123'");
+      expect(this.connection.convert('datasource', 'datetime', datetime)).toBe("'2014-11-21 10:20:45'");
+      expect(this.connection.convert('datasource', 'datetime', '2014-11-21T10:20:45+02:00')).toBe("'2014-11-21 08:20:45'");
+      expect(this.connection.convert('datasource', 'boolean', true)).toBe('TRUE');
+      expect(this.connection.convert('datasource', 'boolean', false)).toBe('FALSE');
+      expect(this.connection.convert('datasource', 'null', null)).toBe('NULL');
+      expect(this.connection.convert('datasource', 'string', 'abc')).toBe("'abc'");
+      expect(this.connection.convert('datasource', '_default_', 123)).toBe("'123'");
+      expect(this.connection.convert('datasource', '_undefined_', 123)).toBe("'123'");
 
     });
 
     it("formats according default `'cast'` handlers", function() {
 
-      expect(this.connection.format('cast', 'id', '123')).toBe(123);
-      expect(this.connection.format('cast', 'serial', '123')).toBe(123);
-      expect(this.connection.format('cast', 'integer', '123')).toBe(123);
-      expect(this.connection.format('cast', 'float', '12.3')).toBe(12.3);
-      expect(this.connection.format('cast', 'decimal', '12.3')).toBe('12.30');
+      expect(this.connection.convert('cast', 'id', '123')).toBe(123);
+      expect(this.connection.convert('cast', 'serial', '123')).toBe(123);
+      expect(this.connection.convert('cast', 'integer', '123')).toBe(123);
+      expect(this.connection.convert('cast', 'float', '12.3')).toBe(12.3);
+      expect(this.connection.convert('cast', 'decimal', '12.3')).toBe('12.30');
       var date = new Date('2014-11-21');
-      expect(this.connection.format('cast', 'date', date)).toEqual(date);
-      expect(this.connection.format('cast', 'date', '2014-11-21')).toEqual(date);
+      expect(this.connection.convert('cast', 'date', date)).toEqual(date);
+      expect(this.connection.convert('cast', 'date', '2014-11-21')).toEqual(date);
       var datetime = new Date('2014-11-21 10:20:45');
-      expect(this.connection.format('cast', 'datetime', datetime)).toEqual(datetime);
+      expect(this.connection.convert('cast', 'datetime', datetime)).toEqual(datetime);
 
       var offset = new Date('2014-11-21 10:20:45').getTimezoneOffset();
       var timezone = ('0' + Math.floor(Math.abs(offset)/60)).slice(-2) + ':' + ('0' + offset%60).slice(-2);
       timezone = offset > 0 ? '-' + timezone : '+' + timezone;
       var local = new Date('2014-11-21T10:20:45' + timezone);
-      expect(this.connection.format('cast', 'datetime', '2014-11-21 10:20:45')).toEqual(local);
+      expect(this.connection.convert('cast', 'datetime', '2014-11-21 10:20:45')).toEqual(local);
 
-      expect(this.connection.format('cast', 'datetime', 1416565245 * 1000)).toEqual(new Date('2014-11-21T10:20:45.000Z'));
-      expect(this.connection.format('cast', 'boolean', 1)).toBe(true);
-      expect(this.connection.format('cast', 'boolean', 0)).toBe(false);
-      expect(this.connection.format('cast', 'null', 'NULL')).toBe(null);
-      expect(this.connection.format('cast', 'string', 'abc')).toBe('abc');
-      expect(this.connection.format('cast', '_default_', 123)).toBe(123);
-      expect(this.connection.format('cast', '_undefined_', 123)).toBe(123);
+      expect(this.connection.convert('cast', 'datetime', 1416565245 * 1000)).toEqual(new Date('2014-11-21T10:20:45.000Z'));
+      expect(this.connection.convert('cast', 'boolean', 1)).toBe(true);
+      expect(this.connection.convert('cast', 'boolean', 0)).toBe(false);
+      expect(this.connection.convert('cast', 'null', 'NULL')).toBe(null);
+      expect(this.connection.convert('cast', 'string', 'abc')).toBe('abc');
+      expect(this.connection.convert('cast', '_default_', 123)).toBe(123);
+      expect(this.connection.convert('cast', '_undefined_', 123)).toBe(123);
 
     });
 
     it("formats `null` values", function() {
 
-      expect(this.connection.format('datasource', 'id', null)).toBe('NULL');
-      expect(this.connection.format('datasource', 'serial', null)).toBe('NULL');
-      expect(this.connection.format('datasource', 'integer', null)).toBe('NULL');
-      expect(this.connection.format('datasource', 'float', null)).toBe('NULL');
-      expect(this.connection.format('datasource', 'decimal', null)).toBe('NULL');
-      expect(this.connection.format('datasource', 'date', null)).toBe('NULL');
-      expect(this.connection.format('datasource', 'datetime', null)).toBe('NULL');
-      expect(this.connection.format('datasource', 'boolean', null)).toBe('NULL');
-      expect(this.connection.format('datasource', 'null', null)).toBe('NULL');
-      expect(this.connection.format('datasource', 'string', null)).toBe('NULL');
-      expect(this.connection.format('datasource', '_default_',null)).toBe('NULL');
-      expect(this.connection.format('datasource', '_undefined_', null)).toBe('NULL');
+      expect(this.connection.convert('datasource', 'id', null)).toBe('NULL');
+      expect(this.connection.convert('datasource', 'serial', null)).toBe('NULL');
+      expect(this.connection.convert('datasource', 'integer', null)).toBe('NULL');
+      expect(this.connection.convert('datasource', 'float', null)).toBe('NULL');
+      expect(this.connection.convert('datasource', 'decimal', null)).toBe('NULL');
+      expect(this.connection.convert('datasource', 'date', null)).toBe('NULL');
+      expect(this.connection.convert('datasource', 'datetime', null)).toBe('NULL');
+      expect(this.connection.convert('datasource', 'boolean', null)).toBe('NULL');
+      expect(this.connection.convert('datasource', 'null', null)).toBe('NULL');
+      expect(this.connection.convert('datasource', 'string', null)).toBe('NULL');
+      expect(this.connection.convert('datasource', '_default_',null)).toBe('NULL');
+      expect(this.connection.convert('datasource', '_undefined_', null)).toBe('NULL');
 
     });
 

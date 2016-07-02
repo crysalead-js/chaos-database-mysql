@@ -91,7 +91,7 @@ class MySql extends Database {
           if (typeof type === 'function') {
             type = type(states.name);
           }
-          return this.format('datasource', type, value);
+          return this.convert('datasource', type, value);
         }.bind(this)
       });
     }
