@@ -469,7 +469,7 @@ describe("MySql", function() {
       expect(this.connection.convert('datasource', 'serial', 123)).toBe('123');
       expect(this.connection.convert('datasource', 'integer', 123)).toBe('123');
       expect(this.connection.convert('datasource', 'float', 12.3)).toBe('12.3');
-      expect(this.connection.convert('datasource', 'decimal', 12.3)).toBe('12.3');
+      expect(this.connection.convert('datasource', 'decimal', 12.3)).toBe('12.30');
       var date = new Date('2014-11-21');
       expect(this.connection.convert('datasource', 'date', date)).toBe("'2014-11-21'");
       expect(this.connection.convert('datasource', 'date', '2014-11-21')).toBe("'2014-11-21'");

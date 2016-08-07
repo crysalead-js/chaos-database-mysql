@@ -1,6 +1,6 @@
 {
   "name": "chaos-database-mysql",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "description": "MySQL adapter for Chaos ORM.",
   "license": "MIT",
   "repository": {
