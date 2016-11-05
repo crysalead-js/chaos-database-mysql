@@ -1,8 +1,9 @@
-import co from 'co';
-import mysql from 'mysql';
-import { extend, merge } from 'extend-merge';
-import { Database } from 'chaos-database';
-import { MySql as MySqlDialect } from 'sql-dialect';
+var co = require('co');
+var mysql = require('mysql');
+var extend = require('extend-merge').extend;
+var merge = require('extend-merge').merge;
+var Database = require('chaos-database').Database;
+var MySqlDialect = require('sql-dialect').MySql;
 
 /**
  * MySQL adapter
@@ -282,4 +283,4 @@ class MySql extends Database {
   }
 }
 
-export default MySql;
+module.exports = MySql;
