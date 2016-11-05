@@ -1,6 +1,6 @@
 {
   "name": "chaos-database-mysql",
-  "version": "6.0.0",
+  "version": "7.0.0",
   "description": "MySQL adapter for Chaos ORM.",
   "license": "MIT",
   "repository": {
@@ -12,33 +12,26 @@
     "database",
     "sql"
   ],
-  "scripts": {
-    "compile": "babel -d lib/ src/",
-    "prepublish": "npm run compile",
-    "test": "mocha --compilers babel:babel-core/register",
-    "coverage-report": "babel-node node_modules/isparta/bin/isparta cover _mocha --i \"src/**/*.js\"",
-    "push-coverage": "cat ./coverage/lcov.info | coveralls",
-    "cleanup": "rm -rf ./coverage"
-  },
-  "main": "lib/index.js",
-  "jsnext:main": "src/index.js",
+  "main": "src/index.js",
   "dependencies": {
-    "chaos-database": "^8.0",
+    "chaos-database": "^9.0",
     "co": "^4.6.0",
     "extend-merge": "^1.0.3",
     "mysql": "^2.11.1",
-    "sql-dialect": "^1.1"
+    "sql-dialect": "^2.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.18.0",
-    "babel-core": "^6.18.2",
-    "babel-polyfill": "^6.16.0",
-    "babel-preset-es2015": "^6.18.0",
     "bluebird": "^3.4.6",
     "chai-kahlan": "^1.0.4",
     "coveralls": "^2.11.14",
-    "isparta": "^4.0.0",
     "jasmine-kahlan": "^1.0.2",
-    "mocha": "^3.1.2"
+    "mocha": "^3.1.2",
+    "nyc": "^8.4.0"
+  },
+  "scripts": {
+    "coverage-report": "nyc --reporter=lcov mocha",
+    "push-coverage": "cat ./coverage/lcov.info | coveralls",
+    "cleanup": "rm -rf ./coverage",
+    "test": "mocha"
   }
 }
