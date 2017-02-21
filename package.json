@@ -1,6 +1,6 @@
 {
   "name": "chaos-database-mysql",
-  "version": "9.0.0",
+  "version": "10.0.0",
   "description": "MySQL adapter for Chaos ORM.",
   "license": "MIT",
   "repository": {
@@ -14,16 +14,16 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "chaos-database": "^11.0",
+    "chaos-database": "^13.0",
     "co": "^4.6.0",
     "extend-merge": "^1.0.3",
-    "mysql": "^2.12.0",
+    "mysql": "^2.13.0",
     "sql-dialect": "^4.0"
   },
   "devDependencies": {
     "bluebird": "^3.4.7",
     "chai-kahlan": "^1.0.4",
-    "coveralls": "^2.11.15",
+    "coveralls": "^2.11.16",
     "jasmine-kahlan": "^1.0.2",
     "mocha": "^3.2.0",
     "nyc": "^10.1.2"
