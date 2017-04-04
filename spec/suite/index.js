@@ -245,15 +245,15 @@ describe("MySql", function() {
       this.schema.column('name', {
         type: 'string',
         length: 128,
-        'default': 'Johnny Boy'
+        default: 'Johnny Boy'
       });
       this.schema.column('active', {
         type: 'boolean',
-        'default': true
+        default: true
       });
       this.schema.column('inactive', {
         type: 'boolean',
-        'default': false
+        default: false
       });
       this.schema.column('money', {
         type: 'decimal',
@@ -263,7 +263,7 @@ describe("MySql", function() {
       this.schema.column('created', {
         type: 'datetime',
         use: 'timestamp',
-        'default': { ':plain': 'CURRENT_TIMESTAMP' }
+        default: { ':plain': 'CURRENT_TIMESTAMP' }
       });
 
     });
@@ -281,7 +281,7 @@ describe("MySql", function() {
           type: 'integer',
           length: 11,
           null: false,
-          'default': null,
+          default: null,
           array: false
         });
 
@@ -289,8 +289,8 @@ describe("MySql", function() {
           use: 'varchar',
           type: 'string',
           length: 128,
-          null: true,
-          'default': 'Johnny Boy',
+          null: false,
+          default: 'Johnny Boy',
           array: false
         });
 
@@ -298,8 +298,8 @@ describe("MySql", function() {
           use: 'tinyint',
           type: 'boolean',
           length: 1,
-          null: true,
-          'default': true,
+          null: false,
+          default: true,
           array: false
         });
 
@@ -307,8 +307,8 @@ describe("MySql", function() {
           use: 'tinyint',
           type: 'boolean',
           length: 1,
-          null: true,
-          'default': false,
+          null: false,
+          default: false,
           array: false
         });
 
@@ -317,16 +317,16 @@ describe("MySql", function() {
           type: 'decimal',
           length: 10,
           precision: 2,
-          null: true,
-          'default': null,
+          null: false,
+          default: null,
           array: false
         });
 
         expect(gallery.column('created')).toEqual({
           use: 'timestamp',
           type: 'datetime',
-          null: true,
-          'default': null,
+          null: false,
+          default: null,
           array: false
         });
 
@@ -352,22 +352,22 @@ describe("MySql", function() {
         expect(gallery.column('name')).toEqual({
           type: 'string',
           length: 128,
-          null: true,
-          'default': 'Johnny Boy',
+          null: false,
+          default: 'Johnny Boy',
           array: false
         });
 
         expect(gallery.column('active')).toEqual({
           type: 'boolean',
-          null: true,
-          'default': true,
+          null: false,
+          default: true,
           array: false
         });
 
         expect(gallery.column('inactive')).toEqual({
           type: 'boolean',
-          null: true,
-          'default': false,
+          null: false,
+          default: false,
           array: false
         });
 
@@ -375,16 +375,16 @@ describe("MySql", function() {
           type: 'decimal',
           length: 10,
           precision: 2,
-          null: true,
+          null: false,
           array: false
         });
 
         expect(gallery.column('created')).toEqual({
           use: 'timestamp',
           type: 'datetime',
-          null: true,
+          null: false,
           array: false,
-          'default': { ':plain': 'CURRENT_TIMESTAMP' }
+          default: { ':plain': 'CURRENT_TIMESTAMP' }
         });
       }.bind(this)).then(function() {
         done();
@@ -402,7 +402,7 @@ describe("MySql", function() {
         var schema = new Schema({ connection: this.connection });
         schema.source('gallery');
         schema.column('id',   { type: 'serial' });
-        schema.column('name', { type: 'string' });
+        schema.column('name', { type: 'string', null: true });
         yield schema.create();
 
         yield schema.insert({ name: 'new gallery' });
@@ -421,7 +421,7 @@ describe("MySql", function() {
         var schema = new Schema({ connection: this.connection });
         schema.source('gallery');
         schema.column('id',   { type: 'serial' });
-        schema.column('name', { type: 'string' });
+        schema.column('name', { type: 'string', null: true });
         yield schema.create();
 
         yield schema.insert({});
