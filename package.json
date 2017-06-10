@@ -26,7 +26,7 @@
     "coveralls": "^2.13.1",
     "jasmine-kahlan": "^1.0.2",
     "mocha": "^3.4.2",
-    "nyc": "^10.3.2"
+    "nyc": "^11.0.2"
   },
   "scripts": {
     "coverage-report": "nyc --reporter=lcov mocha",

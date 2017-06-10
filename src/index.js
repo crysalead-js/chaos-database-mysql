@@ -20,6 +20,7 @@ class MySql extends Database {
     var features = {
       arrays: false,
       transactions: true,
+      savepoints: true,
       booleans: true,
       default: false
     };
@@ -152,12 +153,21 @@ class MySql extends Database {
   }
 
   /**
+   * Opens a transaction
+   *
+   * @return Promise
+   */
+  openTransaction() {
+    return this.execute('START TRANSACTION');
+  }
+
+  /**
    * Finds records using a SQL query.
    *
    * @param  string sql  SQL query to execute.
    * @param  array  data Array of bound parameters to use as values for query.
    *                     WARNING data must be clean at this step. SQL injection must be handled earlier.
-   * @return object      A `Cursor` instance.
+   * @return Promise     A Promise.
    */
   query(sql, data, options) {
     var self = this;
@@ -170,7 +180,8 @@ class MySql extends Database {
       self.connect().then(function() {
         self._client.query(sql, function(err, data) {
           if (err) {
-            return reject(err);
+            reject(err);
+            return;
           }
           if (data && data.insertId !== undefined) {
             self._lastInsertId = data.insertId;
@@ -178,6 +189,27 @@ class MySql extends Database {
           } else {
             accept(data ? new cursor({ data: data }) : true);
           }
+        });
+      });
+    });
+  }
+
+  /**
+   * Execute a raw query.
+   *
+   * @param  string  sql SQL query to execute.
+   * @return Promise
+   */
+  execute(sql) {
+    var self = this;
+    return new Promise(function(accept, reject) {
+      self.connect().then(function() {
+        self._client.query(sql, function(err, data) {
+          if (err) {
+            reject(err);
+            return;
+          }
+          accept();
         });
       });
     });
