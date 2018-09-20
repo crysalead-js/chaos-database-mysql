@@ -18,6 +18,10 @@ describe("MySql", function() {
     this.connection = getConnection();
   });
 
+  after(function() {
+    this.connection.disconnect();
+  });
+
   describe(".constructor()", function() {
 
     it("allows to inject a dialect instance", function() {
@@ -109,6 +113,7 @@ describe("MySql", function() {
 
         actual = yield this.connection.connect();
         expect(actual).toBe(expected);
+        this.connection.disconnect();
       }.bind(this)).then(function() {
         done();
       });
@@ -126,6 +131,7 @@ describe("MySql", function() {
         expect(connection.client()).toBe(undefined);
         yield connection.connect();
         expect(connection.client()).toBeAn('object');
+        connection.disconnect();
       }.bind(this)).then(function() {
         done();
       });
@@ -187,7 +193,7 @@ describe("MySql", function() {
         var gallery = cursor.next();
         expect(gallery.name).toBe('updated gallery');
 
-        expect(yield schema.truncate({ id: id })).toBe(true);
+        expect(yield schema.remove({ id: id })).toBe(true);
 
         var cursor = yield this.connection.query('SELECT `name` FROM `gallery` WHERE `id` = ' + id);
         expect(cursor.valid()).toBe(false);
