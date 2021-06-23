@@ -258,8 +258,9 @@ class MySql extends Database {
           case 'boolean':
             dflt = dflt === '1';
             break;
+          case 'date':
           case 'datetime':
-            dflt = dflt !== 'CURRENT_TIMESTAMP' ? dflt : null;
+            dflt = null;
             break;
         }
 

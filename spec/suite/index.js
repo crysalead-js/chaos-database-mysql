@@ -315,10 +315,11 @@ describe("MySql", function() {
 
         var gallery = yield this.connection.describe('gallery');
 
-        expect(gallery.column('id')).toEqual({
+        var column = gallery.column('id');
+        delete column.length;
+        expect(column).toEqual({
           use: 'int',
           type: 'integer',
-          length: 11,
           null: false,
           default: null,
           array: false
